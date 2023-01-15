@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -6,9 +5,9 @@
 
 int main()
 {
-  char s[] = "HelloWorld";
+  char s[] = "Hello World";
   int pid, i;
-  for (i = 0; i < 10; i++)
+  for (i = 0; s[i]!='\0'; i++)
   {
     pid = fork();
     if (pid == 0)
