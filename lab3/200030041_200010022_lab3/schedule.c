@@ -262,12 +262,6 @@ int do_start_scheduling(message *m_ptr)
 	 */
 
 	m_ptr->m_sched_lsys_scheduling_start.scheduler = SCHED_PROC_NR;
-	if (rmp->priority >= USER_Q)
-	{
-		int pid = _ENDPOINT_P(rmp->endpoint);
-		printf("200030041 MINIX3: PID %d swapped in\n", pid);
-		// printf("200010022 MINIX3: PID %d swapped in\n", pid);
-	}
 	return OK;
 }
 
@@ -349,7 +343,12 @@ static int schedule_process(struct schedproc *rmp, unsigned flags)
 		printf("PM: An error occurred when trying to schedule %d: %d\n",
 			   rmp->endpoint, err);
 	}
-
+	if (rmp->priority >= USER_Q)
+	{
+		int pid = _ENDPOINT_P(rmp->endpoint);
+		printf("200030041 MINIX3: PID %d swapped in\n", pid);
+		// printf("200010022 MINIX3: PID %d swapped in\n", pid);
+	}
 	return err;
 }
 
