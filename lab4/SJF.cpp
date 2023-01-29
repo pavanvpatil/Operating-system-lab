@@ -64,8 +64,6 @@ void add_to_ready_queue()
             proc.second.cpu_time = proc.second.cpu_bound.front();
             proc.second.cpu_bound.pop();
             proc.second.cpu_proc = false;
-            if (proc.second.cpu_bound.front() == -1)
-                proc.second.completed = true;
             CPU_queue.push({proc.second.cpu_time, proc.first});
         }
         else if (check_IO_bound(proc.first) && proc.second.io_time == 0)
@@ -73,10 +71,10 @@ void add_to_ready_queue()
             proc.second.io_time = proc.second.io_bound.front();
             proc.second.io_bound.pop();
             proc.second.cpu_proc = true;
-            if (proc.second.io_bound.front() == -1)
-                proc.second.completed = true;
             IO_queue.push({proc.second.io_time, proc.first});
         }
+        if (proc.second.cpu_bound.empty() && proc.second.io_bound.empty())
+                proc.second.completed = true;
     }
 }
 
@@ -87,7 +85,8 @@ void Start_functioning()
     while (true)
     {
         add_to_ready_queue();
-        // cout << "size: " << CPU_queue.size() << endl;
+        // cout << "CPU size: " << CPU_queue.size() << endl;
+        // cout << "IO size: " << IO_queue.size() << endl;
         if (CPU_queue.empty() && IO_queue.empty())
             break;
         if (!CPU_queue.empty() && (curr_CPU_burst_time == 0 || curr_CPU_burst_time == -1))
@@ -102,7 +101,7 @@ void Start_functioning()
             curr_IO_burst_time = IO_queue.top().first;
             // IO_queue.pop();
         }
-        cout << curr_CPU_burst_time << " " << curr_IO_burst_time << endl;
+        // cout << curr_CPU_burst_time << " " << curr_IO_burst_time << endl;
         // while (curr_CPU_burst_time != 0 && curr_IO_burst_time != 0)
         // {
         if (curr_CPU_burst_time != 0 && curr_CPU_burst_time != -1)
@@ -114,9 +113,11 @@ void Start_functioning()
         if (curr_CPU_burst_time == 0)
         {
             CPU_queue.pop();
+            curr_CPU_burst_time = -1;
         }
         if (curr_CPU_burst_time == 0 && PID_map[Curr_CPU_PID].completed == true)
         {
+            // cout << "PID: " << Curr_CPU_PID << endl;
             PID_map[Curr_CPU_PID].turn_around_time = current_time - PID_map[Curr_CPU_PID].intial_arrival_time;
         }
         if (curr_IO_burst_time != 0 && curr_IO_burst_time != -1)
@@ -128,27 +129,31 @@ void Start_functioning()
         if (curr_IO_burst_time == 0)
         {
             IO_queue.pop();
+            curr_IO_burst_time = -1;
         }
         if (curr_IO_burst_time == 0 && PID_map[Curr_IO_PID].completed == true)
         {
+            // cout << "PID: " << Curr_IO_PID << endl;
             PID_map[Curr_IO_PID].turn_around_time = current_time - PID_map[Curr_IO_PID].intial_arrival_time;
         }
         temp_CPU_queue = CPU_queue;
         while (!temp_CPU_queue.empty())
         {
-            PID_map[temp_CPU_queue.top().second].waiting_time++;
+            if(temp_CPU_queue.top().second != Curr_CPU_PID)
+                PID_map[temp_CPU_queue.top().second].waiting_time++;
             temp_CPU_queue.pop();
         }
         temp_IO_queue = IO_queue;
         while (!temp_IO_queue.empty())
         {
-            PID_map[temp_IO_queue.top().second].waiting_time++;
+            if(temp_IO_queue.top().second != Curr_IO_PID)
+                PID_map[temp_IO_queue.top().second].waiting_time++;
             temp_IO_queue.pop();
         }
         current_time++;
         // cout << "Current Time: " << current_time << endl;
         // }
-        cout << "Current Time: " << current_time << endl;
+        // cout << "Current Time: " << current_time << endl;
     }
 }
 
@@ -176,6 +181,8 @@ int main()
         struct Process p = build_process(PID, i[0]);
         for (int j = 1; j < i.size() - 1; j++)
         {
+            if (i[j] == -1)
+                break;
             if (j % 2 == 1)
                 p.cpu_bound.push(i[j]);
             else
@@ -184,6 +191,12 @@ int main()
         PID_map[PID] = p;
         PID++;
     }
+    // for (auto i : input)
+    // {
+    //     for (auto j : i)
+    //         cout << j << " ";
+    //     cout << endl;
+    // }
     Start_functioning();
     return 0;
 }
