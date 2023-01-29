@@ -143,7 +143,7 @@ void Start_functioning()
 int main()
 {
     // extracting data from file
-    ifstream file("process1.dat");
+    ifstream file("process3.dat");
     string line;
     vector<vector<int>> input;
     while (getline(file, line))
@@ -187,18 +187,24 @@ int main()
     Start_functioning();
     for (auto &i : PID_map)
     {
-        i.second.penalty_ratio = (float)total_actual_time[i.first] / (float)i.second.turn_around_time;
+        i.second.penalty_ratio = (float)i.second.turn_around_time / (float)total_actual_time[i.first];
     }
+    float total_turn_around_time = 0;
+    float total_waiting_time = 0;
     for (auto i : PID_map)
     {
         cout << "PID: " << i.first << ", ";
         cout << "Turn around time: " << i.second.turn_around_time << ", ";
+        total_turn_around_time += i.second.turn_around_time;
         cout << "Waiting time: " << i.second.waiting_time << ", ";
+        total_waiting_time += i.second.waiting_time;
         cout << "Penalty ratio: " << i.second.penalty_ratio << ", ";
         cout << endl;
     }
     cout << endl
          << endl;
     cout << "Total Through put: " << (float)PID_map.size() / current_time << endl;
+    cout << "Average Turn around time: " << (float)total_turn_around_time / PID_map.size() << endl;
+    cout << "Average Waiting time: " << (float)total_waiting_time / PID_map.size() << endl;
     return 0;
 }
