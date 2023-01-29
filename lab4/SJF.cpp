@@ -9,6 +9,7 @@ struct Process
     int PID;
     float turn_around_time;
     float waiting_time;
+    float penalty_ratio;
     queue<int> cpu_bound;
     queue<int> io_bound;
     int io_time;
@@ -30,6 +31,7 @@ struct Process build_process(int PID, int arrival_time)
     proc.PID = PID;
     proc.turn_around_time = -1;
     proc.waiting_time = 0;
+    proc.penalty_ratio = -1;
     proc.completed = false;
     proc.io_time = 0;
     proc.cpu_time = 0;
@@ -141,7 +143,7 @@ void Start_functioning()
 int main()
 {
     // extracting data from file
-    ifstream file("process2.dat");
+    ifstream file("process1.dat");
     string line;
     vector<vector<int>> input;
     while (getline(file, line))
@@ -170,19 +172,33 @@ int main()
         PID_map[PID] = p;
         PID++;
     }
-    // for (auto i : input)
-    // {
-    //     for (auto j : i)
-    //         cout << j << " ";
-    //     cout << endl;
-    // }
+    unordered_map<int, int> total_actual_time;
+    PID = 0;
+    for (auto i : input)
+    {
+        for (auto j : i)
+        {
+            if (j == -1)
+                break;
+            total_actual_time[PID] += j;
+        }
+        PID++;
+    }
     Start_functioning();
+    for (auto &i : PID_map)
+    {
+        i.second.penalty_ratio = (float)total_actual_time[i.first] / (float)i.second.turn_around_time;
+    }
     for (auto i : PID_map)
     {
-        cout << "PID: " << i.first << endl;
-        cout << "Turn Around Time: " << i.second.turn_around_time << endl;
-        cout << "Waiting Time: " << i.second.waiting_time << endl;
+        cout << "PID: " << i.first << ", ";
+        cout << "Turn around time: " << i.second.turn_around_time << ", ";
+        cout << "Waiting time: " << i.second.waiting_time << ", ";
+        cout << "Penalty ratio: " << i.second.penalty_ratio << ", ";
         cout << endl;
     }
+    cout << endl
+         << endl;
+    cout << "Total Through put: " << (float)PID_map.size() / current_time << endl;
     return 0;
 }
