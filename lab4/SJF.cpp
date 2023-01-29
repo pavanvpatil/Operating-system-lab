@@ -143,7 +143,7 @@ void Start_functioning()
 int main()
 {
     // extracting data from file
-    ifstream file("process3.dat");
+    ifstream file("process1.dat");
     string line;
     vector<vector<int>> input;
     while (getline(file, line))
@@ -203,7 +203,7 @@ int main()
     }
     cout << endl
          << endl;
-    cout << "Total Through put: " << (float)PID_map.size() / current_time << endl;
+    cout << "Total Through put: " << (float)PID_map.size() / (current_time - 1) << endl;
     cout << "Average Turn around time: " << (float)total_turn_around_time / PID_map.size() << endl;
     cout << "Average Waiting time: " << (float)total_waiting_time / PID_map.size() << endl;
     return 0;
