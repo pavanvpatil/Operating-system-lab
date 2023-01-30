@@ -140,10 +140,24 @@ void Start_functioning()
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     // extracting data from file
-    ifstream file("process1.dat");
+    string filename = "process1.dat";
+    if (argc == 2)
+        filename = argv[1];
+    ifstream file;
+    try
+    {
+        file.open(filename);
+        if (file.fail())
+            throw exception();
+    }
+    catch (exception e)
+    {
+        cout << "File not found" << endl;
+        return 0;
+    }
     string line;
     vector<vector<int>> input;
     while (getline(file, line))
