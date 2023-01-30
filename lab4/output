@@ -1,0 +1,65 @@
+g++ RR.cpp -o RR.exe
+./RR.exe ./test/process1.dat
+PID: 0, Turn around time: 1430, Waiting time: 999, Penalty ratio: 3.39667
+PID: 1, Turn around time: 1344, Waiting time: 998, Penalty ratio: 3.91837
+PID: 2, Turn around time: 1243, Waiting time: 950, Penalty ratio: 4.22789
+PID: 3, Turn around time: 954, Waiting time: 751, Penalty ratio: 4.65366
+PID: 4, Turn around time: 83, Waiting time: 71, Penalty ratio: 4.61111
+PID: 5, Turn around time: 26, Waiting time: 21, Penalty ratio: 2.36364
+PID: 6, Turn around time: 1021, Waiting time: 814, Penalty ratio: 4.74884
+___________________________________________________________________________
+
+Total Through put: 0.00489511
+Average Turn around time: 871.571
+Average Waiting time: 657.714
+Average Penalty ratio: 3.9886
+___________________________________________________________________________
+
+./RR.exe ./test/process2.dat
+PID: 0, Turn around time: 4, Waiting time: 0, Penalty ratio: 0.8
+PID: 1, Turn around time: 22, Waiting time: 8, Penalty ratio: 1.57143
+PID: 2, Turn around time: 690, Waiting time: 483, Penalty ratio: 3.33333
+PID: 3, Turn around time: 102, Waiting time: 88, Penalty ratio: 2.83333
+PID: 4, Turn around time: 877, Waiting time: 577, Penalty ratio: 2.78413
+PID: 5, Turn around time: 120, Waiting time: 106, Penalty ratio: 3.15789
+PID: 6, Turn around time: 934, Waiting time: 584, Penalty ratio: 2.54496
+PID: 7, Turn around time: 132, Waiting time: 118, Penalty ratio: 3.3
+PID: 8, Turn around time: 243, Waiting time: 203, Penalty ratio: 3.73846
+PID: 9, Turn around time: 143, Waiting time: 131, Penalty ratio: 3.40476
+PID: 10, Turn around time: 144, Waiting time: 129, Penalty ratio: 3.27273
+PID: 11, Turn around time: 145, Waiting time: 130, Penalty ratio: 3.15217
+PID: 12, Turn around time: 146, Waiting time: 131, Penalty ratio: 3.04167
+PID: 13, Turn around time: 152, Waiting time: 137, Penalty ratio: 2.86792
+PID: 14, Turn around time: 149, Waiting time: 137, Penalty ratio: 2.81132
+PID: 15, Turn around time: 153, Waiting time: 138, Penalty ratio: 2.78182
+PID: 16, Turn around time: 155, Waiting time: 140, Penalty ratio: 2.76786
+PID: 17, Turn around time: 161, Waiting time: 149, Penalty ratio: 2.77586
+___________________________________________________________________________
+
+Total Through put: 0.01875
+Average Turn around time: 248.444
+Average Waiting time: 188.278
+Average Penalty ratio: 2.82998
+___________________________________________________________________________
+
+./RR.exe ./test/process3.dat
+PID: 0, Turn around time: 1487, Waiting time: 1249, Penalty ratio: 6.52193
+PID: 1, Turn around time: 1920, Waiting time: 1624, Penalty ratio: 6.48649
+PID: 2, Turn around time: 1862, Waiting time: 1533, Penalty ratio: 6.02589
+PID: 3, Turn around time: 1344, Waiting time: 1176, Penalty ratio: 7.63636
+PID: 4, Turn around time: 1100, Waiting time: 924, Penalty ratio: 6.07735
+PID: 5, Turn around time: 2070, Waiting time: 1665, Penalty ratio: 5.14925
+PID: 6, Turn around time: 1627, Waiting time: 1389, Penalty ratio: 6.11654
+PID: 7, Turn around time: 95, Waiting time: 89, Penalty ratio: 2.31707
+PID: 8, Turn around time: 181, Waiting time: 121, Penalty ratio: 1.88542
+PID: 9, Turn around time: 905, Waiting time: 803, Penalty ratio: 6.60584
+PID: 10, Turn around time: 102, Waiting time: 94, Penalty ratio: 2.17021
+PID: 11, Turn around time: 2017, Waiting time: 1598, Penalty ratio: 4.70163
+___________________________________________________________________________
+
+Total Through put: 0.00574163
+Average Turn around time: 1225.83
+Average Waiting time: 1022.08
+Average Penalty ratio: 5.14117
+___________________________________________________________________________
+

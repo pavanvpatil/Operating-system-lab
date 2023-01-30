@@ -1,0 +1,65 @@
+g++ SJF.cpp -o SJF.exe
+./SJF.exe ./test/process1.dat
+PID: 0, Turn around time: 1223, Waiting time: 803, Penalty ratio: 2.90499
+PID: 1, Turn around time: 1211, Waiting time: 871, Penalty ratio: 3.53061
+PID: 2, Turn around time: 660, Waiting time: 370, Penalty ratio: 2.2449
+PID: 3, Turn around time: 549, Waiting time: 349, Penalty ratio: 2.67805
+PID: 4, Turn around time: 118, Waiting time: 106, Penalty ratio: 6.55556
+PID: 5, Turn around time: 101, Waiting time: 97, Penalty ratio: 9.18182
+PID: 6, Turn around time: 1418, Waiting time: 1214, Penalty ratio: 6.59535
+___________________________________________________________________________
+
+Total Through put: 0.00490196
+Average Turn around time: 754.286
+Average Waiting time: 544.286
+Average Penalty ratio: 4.81304
+___________________________________________________________________________
+
+./SJF.exe ./test/process2.dat
+PID: 0, Turn around time: 4, Waiting time: 0, Penalty ratio: 0.8
+PID: 1, Turn around time: 82, Waiting time: 70, Penalty ratio: 5.85714
+PID: 2, Turn around time: 480, Waiting time: 280, Penalty ratio: 2.31884
+PID: 3, Turn around time: 75, Waiting time: 63, Penalty ratio: 2.08333
+PID: 4, Turn around time: 812, Waiting time: 522, Penalty ratio: 2.57778
+PID: 5, Turn around time: 76, Waiting time: 64, Penalty ratio: 2
+PID: 6, Turn around time: 934, Waiting time: 594, Penalty ratio: 2.54496
+PID: 7, Turn around time: 89, Waiting time: 77, Penalty ratio: 2.225
+PID: 8, Turn around time: 228, Waiting time: 192, Penalty ratio: 3.50769
+PID: 9, Turn around time: 90, Waiting time: 78, Penalty ratio: 2.14286
+PID: 10, Turn around time: 103, Waiting time: 91, Penalty ratio: 2.34091
+PID: 11, Turn around time: 104, Waiting time: 92, Penalty ratio: 2.26087
+PID: 12, Turn around time: 117, Waiting time: 105, Penalty ratio: 2.4375
+PID: 13, Turn around time: 115, Waiting time: 103, Penalty ratio: 2.16981
+PID: 14, Turn around time: 130, Waiting time: 118, Penalty ratio: 2.45283
+PID: 15, Turn around time: 131, Waiting time: 119, Penalty ratio: 2.38182
+PID: 16, Turn around time: 145, Waiting time: 133, Penalty ratio: 2.58929
+PID: 17, Turn around time: 146, Waiting time: 134, Penalty ratio: 2.51724
+___________________________________________________________________________
+
+Total Through put: 0.01875
+Average Turn around time: 214.5
+Average Waiting time: 157.5
+Average Penalty ratio: 2.51155
+___________________________________________________________________________
+
+./SJF.exe ./test/process3.dat
+PID: 0, Turn around time: 352, Waiting time: 125, Penalty ratio: 1.54386
+PID: 1, Turn around time: 1690, Waiting time: 1397, Penalty ratio: 5.70946
+PID: 2, Turn around time: 767, Waiting time: 464, Penalty ratio: 2.4822
+PID: 3, Turn around time: 1349, Waiting time: 1182, Penalty ratio: 7.66477
+PID: 4, Turn around time: 445, Waiting time: 277, Penalty ratio: 2.45856
+PID: 5, Turn around time: 1918, Waiting time: 1537, Penalty ratio: 4.77114
+PID: 6, Turn around time: 817, Waiting time: 582, Penalty ratio: 3.07143
+PID: 7, Turn around time: 5, Waiting time: 0, Penalty ratio: 0.121951
+PID: 8, Turn around time: 81, Waiting time: 22, Penalty ratio: 0.84375
+PID: 9, Turn around time: 1435, Waiting time: 1336, Penalty ratio: 10.4745
+PID: 10, Turn around time: 17, Waiting time: 9, Penalty ratio: 0.361702
+PID: 11, Turn around time: 2066, Waiting time: 1678, Penalty ratio: 4.81585
+___________________________________________________________________________
+
+Total Through put: 0.00569801
+Average Turn around time: 911.833
+Average Waiting time: 717.417
+Average Penalty ratio: 3.69326
+___________________________________________________________________________
+
