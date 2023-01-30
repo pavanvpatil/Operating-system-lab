@@ -3,7 +3,7 @@
 using namespace std;
 
 int current_time = 0;
-int timeslice = 5;
+int timeslice = 0;
 
 struct Process
 {
@@ -83,39 +83,35 @@ void add_to_ready_queue()
 
 void Start_functioning()
 {
-    int Curr_CPU_PID, Curr_IO_PID;
-    int curr_CPU_burst_time = -1, curr_IO_burst_time = -1;
+    int Curr_IO_PID;
+    int curr_IO_burst_time = -1;
     int temp_timeslice = timeslice;
     while (true)
     {
         add_to_ready_queue();
         if (CPU_queue.size() == 0 && IO_queue.size() == 0 && curr_IO_burst_time == -1)
             break;
-        // if (!CPU_queue.size() == 0 && (curr_CPU_burst_time == 0 || curr_CPU_burst_time == -1))
-        // {
-        //     Curr_CPU_PID = CPU_queue[0].second;
-        //     curr_CPU_burst_time = CPU_queue[0].first;
-        //     // CPU_queue.erase();
-        // }
-        if (!IO_queue.size() == 0 && (curr_IO_burst_time == 0 || curr_IO_burst_time == -1))
+        if (!(IO_queue.size() == 0) && curr_IO_burst_time == -1)
         {
             Curr_IO_PID = IO_queue[0].second;
             curr_IO_burst_time = IO_queue[0].first;
             IO_queue.erase(IO_queue.begin());
         }
-        if (CPU_queue[0].first != 0)
+        bool flag_for_completion_of_cpu_bound = false;
+        if (!(CPU_queue.size() == 0))
         {
-            cout << "PID: " << CPU_queue[0].second << " CPU Burst: " << CPU_queue[0].first << " IO Burst: " << curr_IO_burst_time << endl;
-            CPU_queue[0].first--;
-            PID_map[CPU_queue[0].second].cpu_time--;
-        }
-        bool flag_for_first_process = false;
-        if (CPU_queue[0].first == 0)
-        {
-            PID_map[CPU_queue[0].second].turn_around_time = current_time - PID_map[CPU_queue[0].second].intial_arrival_time;
-            CPU_queue.erase(CPU_queue.begin());
-            temp_timeslice = timeslice;
-            flag_for_first_process = true;
+            if (CPU_queue[0].first != 0)
+            {
+                CPU_queue[0].first--;
+                PID_map[CPU_queue[0].second].cpu_time--;
+            }
+            if (CPU_queue[0].first == 0)
+            {
+                PID_map[CPU_queue[0].second].turn_around_time = current_time - PID_map[CPU_queue[0].second].intial_arrival_time;
+                CPU_queue.erase(CPU_queue.begin());
+                temp_timeslice = timeslice;
+                flag_for_completion_of_cpu_bound = true;
+            }
         }
         if (curr_IO_burst_time != 0 && curr_IO_burst_time != -1)
         {
@@ -142,40 +138,41 @@ void Start_functioning()
                 PID_map[temp_IO_queue[0].second].waiting_time++;
             temp_IO_queue.erase(temp_IO_queue.begin());
         }
-        temp_timeslice--;
+
+        if (!flag_for_completion_of_cpu_bound)
+            temp_timeslice--;
+
         if (temp_timeslice == 0)
         {
-            if (!CPU_queue.size() == 0 && !flag_for_first_process)
+            if (!CPU_queue.size() == 0)
             {
                 CPU_queue.push_back(CPU_queue[0]);
                 CPU_queue.erase(CPU_queue.begin());
             }
             temp_timeslice = timeslice;
         }
-        cout << "time_slice " << temp_timeslice << endl;
         current_time++;
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     // extracting data from file
-    string filename = "process1.dat";
-    // if (argc == 2)
-    //     filename = argv[1];
+    string filename = "process2.dat";
+    if (argc == 2)
+        filename = argv[1];
     ifstream file;
-    file.open(filename);
-    // try
-    // {
-    //     file.open(filename);
-    //     if (file.fail())
-    //         throw exception();
-    // }
-    // catch (exception e)
-    // {
-    //     cout << "File not found" << endl;
-    //     return 0;
-    // }
+    try
+    {
+        file.open(filename);
+        if (file.fail())
+            throw exception();
+    }
+    catch (exception e)
+    {
+        cout << "File not found" << endl;
+        return 0;
+    }
     string line;
     vector<vector<int>> input;
     while (getline(file, line))
@@ -223,18 +220,17 @@ int main()
     }
     float total_turn_around_time = 0;
     float total_waiting_time = 0;
-    for (auto i : PID_map)
+    for (int i = 0; i < PID_map.size(); i++)
     {
-        cout << "PID: " << i.first << ", ";
-        cout << "Turn around time: " << i.second.turn_around_time << ", ";
-        total_turn_around_time += i.second.turn_around_time;
-        cout << "Waiting time: " << i.second.waiting_time << ", ";
-        total_waiting_time += i.second.waiting_time;
-        cout << "Penalty ratio: " << i.second.penalty_ratio << ", ";
+        cout << "PID: " << i << ", ";
+        cout << "Turn around time: " << PID_map[i].turn_around_time << ", ";
+        total_turn_around_time += PID_map[i].turn_around_time;
+        cout << "Waiting time: " << PID_map[i].waiting_time << ", ";
+        total_waiting_time += PID_map[i].waiting_time;
+        cout << "Penalty ratio: " << PID_map[i].penalty_ratio;
         cout << endl;
     }
-    cout << endl
-         << endl;
+    cout<<"___________________________________________________________________________"<<endl<<endl;
     cout << "Total Through put: " << (float)PID_map.size() / (current_time - 1) << endl;
     cout << "Average Turn around time: " << (float)total_turn_around_time / PID_map.size() << endl;
     cout << "Average Waiting time: " << (float)total_waiting_time / PID_map.size() << endl;
