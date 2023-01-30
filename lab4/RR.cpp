@@ -158,7 +158,7 @@ void Start_functioning()
 int main(int argc, char *argv[])
 {
     // extracting data from file
-    string filename = "process1.dat";
+    string filename = "./test/process1.dat";
     if (argc == 2)
         filename = argv[1];
     ifstream file;
@@ -220,6 +220,7 @@ int main(int argc, char *argv[])
     }
     float total_turn_around_time = 0;
     float total_waiting_time = 0;
+    float total_penalty_ratio = 0;
     for (int i = 0; i < PID_map.size(); i++)
     {
         cout << "PID: " << i << ", ";
@@ -228,6 +229,7 @@ int main(int argc, char *argv[])
         cout << "Waiting time: " << PID_map[i].waiting_time << ", ";
         total_waiting_time += PID_map[i].waiting_time;
         cout << "Penalty ratio: " << PID_map[i].penalty_ratio;
+        total_penalty_ratio += PID_map[i].penalty_ratio;
         cout << endl;
     }
     cout << "___________________________________________________________________________" << endl
@@ -235,5 +237,8 @@ int main(int argc, char *argv[])
     cout << "Total Through put: " << (float)PID_map.size() / (current_time - 1) << endl;
     cout << "Average Turn around time: " << (float)total_turn_around_time / PID_map.size() << endl;
     cout << "Average Waiting time: " << (float)total_waiting_time / PID_map.size() << endl;
+    cout << "Average Penalty ratio: " << (float)total_penalty_ratio / PID_map.size() << endl;
+    cout << "___________________________________________________________________________" << endl
+         << endl;
     return 0;
 }

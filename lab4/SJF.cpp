@@ -143,7 +143,7 @@ void Start_functioning()
 int main(int argc, char *argv[])
 {
     // extracting data from file
-    string filename = "process1.dat";
+    string filename = "./test/process1.dat";
     if (argc == 2)
         filename = argv[1];
     ifstream file;
@@ -205,20 +205,25 @@ int main(int argc, char *argv[])
     }
     float total_turn_around_time = 0;
     float total_waiting_time = 0;
-    for (auto i : PID_map)
+    float total_penalty_ratio = 0;
+    for (int i = 0; i < PID_map.size(); i++)
     {
-        cout << "PID: " << i.first << ", ";
-        cout << "Turn around time: " << i.second.turn_around_time << ", ";
-        total_turn_around_time += i.second.turn_around_time;
-        cout << "Waiting time: " << i.second.waiting_time << ", ";
-        total_waiting_time += i.second.waiting_time;
-        cout << "Penalty ratio: " << i.second.penalty_ratio << ", ";
+        cout << "PID: " << i << ", ";
+        cout << "Turn around time: " << PID_map[i].turn_around_time << ", ";
+        total_turn_around_time += PID_map[i].turn_around_time;
+        cout << "Waiting time: " << PID_map[i].waiting_time << ", ";
+        total_waiting_time += PID_map[i].waiting_time;
+        cout << "Penalty ratio: " << PID_map[i].penalty_ratio;
+        total_penalty_ratio += PID_map[i].penalty_ratio;
         cout << endl;
     }
-    cout << endl
+    cout << "___________________________________________________________________________" << endl
          << endl;
     cout << "Total Through put: " << (float)PID_map.size() / (current_time - 1) << endl;
     cout << "Average Turn around time: " << (float)total_turn_around_time / PID_map.size() << endl;
     cout << "Average Waiting time: " << (float)total_waiting_time / PID_map.size() << endl;
+    cout << "Average Penalty ratio: " << (float)total_penalty_ratio / PID_map.size() << endl;
+    cout << "___________________________________________________________________________" << endl
+         << endl;
     return 0;
 }
