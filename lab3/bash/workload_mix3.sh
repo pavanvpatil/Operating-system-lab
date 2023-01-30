@@ -1,4 +1,4 @@
 #!/bin/sh
-./arithoh.sh &
+./spawn.sh &
 ./syscall.sh &
 wait

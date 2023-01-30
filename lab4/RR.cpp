@@ -3,7 +3,7 @@
 using namespace std;
 
 int current_time = 0;
-int timeslice = 0;
+int timeslice = 5;
 
 struct Process
 {
@@ -158,7 +158,7 @@ void Start_functioning()
 int main(int argc, char *argv[])
 {
     // extracting data from file
-    string filename = "process2.dat";
+    string filename = "process1.dat";
     if (argc == 2)
         filename = argv[1];
     ifstream file;
@@ -230,7 +230,8 @@ int main(int argc, char *argv[])
         cout << "Penalty ratio: " << PID_map[i].penalty_ratio;
         cout << endl;
     }
-    cout<<"___________________________________________________________________________"<<endl<<endl;
+    cout << "___________________________________________________________________________" << endl
+         << endl;
     cout << "Total Through put: " << (float)PID_map.size() / (current_time - 1) << endl;
     cout << "Average Turn around time: " << (float)total_turn_around_time / PID_map.size() << endl;
     cout << "Average Waiting time: " << (float)total_waiting_time / PID_map.size() << endl;
