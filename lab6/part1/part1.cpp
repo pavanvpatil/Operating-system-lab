@@ -20,31 +20,25 @@ public:
 
 // source: https://www.baeldung.com/cs/convert-rgb-to-grayscale
 //  Luminosity Method
-vector<vector<pixel*>> grayScale(vector<vector<pixel*>> pixels) {
-
+void grayScale(vector<vector<pixel*>>& pixels) {
     int width = pixels[0].size();
     int height = pixels.size();
-
-    vector<vector<pixel*>> newPixels(height, vector<pixel*>(width, NULL));
-
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             float avg = 0.3 * pixels[i][j]->r + 0.59 * pixels[i][j]->g + 0.11 * pixels[i][j]->b;
             avg = (int)avg;
-            newPixels[i][j] = new pixel(avg, avg, avg);
+            pixels[i][j]->r = avg;
+            pixels[i][j]->g = avg;
+            pixels[i][j]->b = avg;
         }
     }
 
-    return newPixels;
-
 }
 
-vector<vector<pixel*>> blueTone(vector<vector<pixel*>> pixels) {
+void blueTone(vector<vector<pixel*>>& pixels) {
 
     int width = pixels[0].size();
     int height = pixels.size();
-
-    vector<vector<pixel*>> newPixels(height, vector<pixel*>(width, NULL));
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -54,23 +48,26 @@ vector<vector<pixel*>> blueTone(vector<vector<pixel*>> pixels) {
             } else {
                 b += 50;
             }
-            newPixels[i][j] = new pixel(pixels[i][j]->r, pixels[i][j]->g, b);
+            pixels[i][j]->b = b;
         }
     }
-
-    return newPixels;
 
 }
 
 int main(int argc, char* argv[]) {
 
-    string file;
-    cin >> file;
+    if(argc != 3) {
+        cout << "Usage: ./part1 <input_file> <output_file>" << endl;
+        return 1;
+    }
+
+    string input_file = argv[1];
+    string output_file = argv[2];
 
     ifstream in;
     ofstream out;
 
-    in.open(file);
+    in.open(input_file);
 
     string type;
     int width, height, maxColor;
@@ -95,7 +92,7 @@ int main(int argc, char* argv[]) {
 
     }
     
-    out.open("out.ppm");
+    out.open(output_file);
 
     if (out.is_open()) {
 
@@ -103,12 +100,12 @@ int main(int argc, char* argv[]) {
         out << width << " " << height << endl;
         out << maxColor << endl;
 
-        vector<vector<pixel*>> newPixels = grayScale(pixels);
-        newPixels = blueTone(newPixels);
+        grayScale(pixels);
+        blueTone(pixels);
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                out << newPixels[i][j]->r << " " << newPixels[i][j]->g << " " << newPixels[i][j]->b <<" ";
+                out << pixels[i][j]->r << " " << pixels[i][j]->g << " " << pixels[i][j]->b <<" ";
             }
             out << endl;
         }
