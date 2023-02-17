@@ -5,10 +5,16 @@
 #include <thread>
 #include <chrono>
 #include <semaphore.h>
-
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 using namespace std;
 
+key_t pixels_key = 0x1256;
+key_t sem_key = 0x1258;
 class pixel
 {
 public:
@@ -22,49 +28,92 @@ public:
     }
 };
 
-vector<vector<pixel *>> pixels;
+// vector<vector<pixel *>> pixels;
 
-auto startTime() {
+auto startTime()
+{
     return chrono::high_resolution_clock::now();
 }
-auto endTime() {
+auto endTime()
+{
     return chrono::high_resolution_clock::now();
 }
 
 // source: https://www.baeldung.com/cs/convert-rgb-to-grayscale
 //  Luminosity Method
-void grayScale(vector<vector<pixel *>> &pixels)
+void grayScale(int width, int height, int size)
 {
-    int width = pixels[0].size();
-    int height = pixels.size();
+    // shared memory
+    int shmid_pixel = shmget(pixels_key, size, IPC_CREAT | 0666);
+    cout << "shmid_pixelg: " << shmid_pixel << endl;
+    if (shmid_pixel < 0)
+    {
+        perror("shmget");
+        exit(1);
+    }
+    // attach shared memory
+    pixel **pixels = (pixel **)shmat(shmid_pixel, NULL, 0);
+    cout << "pixelsg: " << pixels << endl;
+
+    // shared semaphores memory
+    int shmid_sem = shmget(sem_key, sizeof(sem_t), IPC_CREAT | 0666);
+    cout << "shmid_semg: " << shmid_sem << endl;
+    if (shmid_sem < 0)
+    {
+        perror("shmget");
+        exit(1);
+    }
+    // attach shared memory
+    
+    sem_t *sem = (sem_t *)shmat(shmid_sem, NULL, 0);
+    sem_wait(sem);
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-
-
-            float avg = 0.3 * pixels[i][j]->r + 0.59 * pixels[i][j]->g + 0.11 * pixels[i][j]->b;
+           
+            float avg = 0.3 * pixels[i * width + j]->r + 0.59 * pixels[i * width + j]->g + 0.11 * pixels[i * width + j]->b;
             avg = (int)avg;
-            pixels[i][j]->r = avg;
-            pixels[i][j]->g = avg;
-            pixels[i][j]->b = avg;
-         
+            pixels[i * width + j]->r = avg;
+            pixels[i * width + j]->g = avg;
+            pixels[i * width + j]->b = avg;
+            
         }
     }
+    sem_post(sem);
 }
 
-void blueTone(vector<vector<pixel *>> &pixels)
+void blueTone(int width, int height, int size)
 {
 
-    int width = pixels[0].size();
-    int height = pixels.size();
+    // shared memory
+    int shmid_pixel = shmget(pixels_key, size, IPC_CREAT | 0666);
+    cout << "shmid_pixelb: " << shmid_pixel << endl;
+    if (shmid_pixel < 0)
+    {
+        perror("shmget");
+        exit(1);
+    }
+    // attach shared memory
+    pixel **pixels = (pixel **)shmat(shmid_pixel, NULL, 0);
+    cout << "pixelsb: " << pixels << endl;
 
+    // shared semaphores memory
+    int shmid_sem = shmget(sem_key, sizeof(sem_t), IPC_CREAT | 0666);
+    cout << "shmid_semb: " << shmid_sem << endl;
+    if (shmid_sem < 0)
+    {
+        perror("shmget");
+        exit(1);
+    }
+    // attach shared memory
+    sem_t *sem = (sem_t *)shmat(shmid_sem, NULL, 0);
+    sem_wait(sem);
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-
-            int b = pixels[i][j]->b;
+            int b = pixels[i * width + j]->b;
             if (b + 50 > 255)
             {
                 b = 255;
@@ -73,10 +122,10 @@ void blueTone(vector<vector<pixel *>> &pixels)
             {
                 b += 50;
             }
-            pixels[i][j]->b = b;
-           
+            pixels[i * width + j]->b = b;
         }
     }
+    sem_post(sem);
 }
 
 int main(int argc, char *argv[])
@@ -105,8 +154,17 @@ int main(int argc, char *argv[])
         in >> type;
         in >> width >> height;
         in >> maxColor;
+        // create shared memory
+        int shmid = shmget(pixels_key, sizeof(pixel *) * height * width, IPC_CREAT | 0666);
+        if (shmid < 0)
+        {
+            perror("shmget");
+            exit(1);
+        }
 
-        pixels.resize(height, vector<pixel *>(width, NULL));
+        // attach shared memory
+        pixel **pixels = (pixel **)shmat(shmid, NULL, 0);
+        cout << "pixelsi: " << pixels << endl;
 
         for (int i = 0; i < height; i++)
         {
@@ -114,7 +172,7 @@ int main(int argc, char *argv[])
             {
                 int r, g, b;
                 in >> r >> g >> b;
-                pixels[i][j] = new pixel(r, g, b);
+                pixels[i * width + j] = new pixel(r, g, b);
             }
         }
     }
@@ -128,24 +186,66 @@ int main(int argc, char *argv[])
         out << width << " " << height << endl;
         out << maxColor << endl;
 
-        
+        // create shared memory for semaphores
+        int semid = shmget(sem_key, sizeof(sem_t), IPC_CREAT | 0666);
+        if (semid < 0)
+        {
+            perror("shmget");
+            exit(1);
+        }
+
+        // attach shared memory for semaphores
+        sem_t *semaphores = (sem_t *)shmat(semid, NULL, 0);
+
+        // initialize semaphores
+        sem_init(semaphores, 1, 1);
+
+        // declare vector for pixels
+
         auto start = startTime();
-        thread t1(grayScale, ref(pixels));
-        thread t2(blueTone, ref(pixels));
-        t1.join();
-        t2.join();
+
+        int pid = fork();
+
+        if (pid == 0)
+        {
+            // child process
+
+            grayScale(width, height, sizeof(pixel *) * height * width);
+            exit(0);
+        }
+        else
+        {
+            // parent process
+            wait(NULL);
+            blueTone(width, height, sizeof(pixel *) * height * width);
+            
+        }
+
         auto end = endTime();
 
         cout << "Time taken: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms" << endl;
-        
+
+        int shmid_pixel = shmget(pixels_key, sizeof(pixel *) * height * width, IPC_CREAT | 0666);
+        if (shmid_pixel < 0)
+        {
+            perror("shmget");
+            exit(1);
+        }
+
+        // attach shared memory
+        pixel **pixels = (pixel **)shmat(shmid_pixel, NULL, 0);
+        cout<<"pixelsf: "<<pixels<<endl;
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
             {
-                out << pixels[i][j]->r << " " << pixels[i][j]->g << " " << pixels[i][j]->b << " ";
+                out << pixels[i * width + j]->r << " " << pixels[i * width + j]->g << " " << pixels[i * width + j]->b << " ";
             }
             out << endl;
         }
+        // remove shared memory
+        shmctl(shmid_pixel, IPC_RMID, NULL);
+        shmctl(semid, IPC_RMID, NULL);
     }
 
     out.close();
