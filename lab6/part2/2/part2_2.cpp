@@ -6,8 +6,6 @@
 #include <chrono>
 #include <semaphore.h>
 
-// declare a semaphore
-sem_t sem;
 
 using namespace std;
 
@@ -44,13 +42,13 @@ void grayScale(vector<vector<pixel *>> &pixels)
         for (int j = 0; j < width; j++)
         {
 
-            sem_wait(&sem);
+
             float avg = 0.3 * pixels[i][j]->r + 0.59 * pixels[i][j]->g + 0.11 * pixels[i][j]->b;
             avg = (int)avg;
             pixels[i][j]->r = avg;
             pixels[i][j]->g = avg;
             pixels[i][j]->b = avg;
-            sem_post(&sem);
+         
         }
     }
 }
@@ -66,7 +64,6 @@ void blueTone(vector<vector<pixel *>> &pixels)
         for (int j = 0; j < width; j++)
         {
 
-            sem_wait(&sem);
             int b = pixels[i][j]->b;
             if (b + 50 > 255)
             {
@@ -77,7 +74,7 @@ void blueTone(vector<vector<pixel *>> &pixels)
                 b += 50;
             }
             pixels[i][j]->b = b;
-            sem_post(&sem);
+           
         }
     }
 }
@@ -131,9 +128,7 @@ int main(int argc, char *argv[])
         out << width << " " << height << endl;
         out << maxColor << endl;
 
-        // init semaphore
-        sem_init(&sem, 0, 1);
-
+        
         auto start = startTime();
         thread t1(grayScale, ref(pixels));
         thread t2(blueTone, ref(pixels));
@@ -155,8 +150,6 @@ int main(int argc, char *argv[])
 
     out.close();
     in.close();
-
-    sem_destroy(&sem);
 
     return 0;
 }

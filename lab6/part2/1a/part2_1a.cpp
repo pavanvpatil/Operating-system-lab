@@ -22,7 +22,7 @@ public:
 };
 
 vector<vector<pixel*>> pixels;
-// atomic flag
+
 atomic_flag flag = ATOMIC_FLAG_INIT;
 
 auto startTime() {
@@ -135,9 +135,6 @@ int main(int argc, char* argv[]) {
 
         cout << "Duration: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms" << endl;
         
-        // grayScale(pixels);
-        // blueTone(pixels);
-
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 out << pixels[i][j]->r << " " << pixels[i][j]->g << " " << pixels[i][j]->b <<" ";
@@ -150,7 +147,6 @@ int main(int argc, char* argv[]) {
     out.close();
     in.close();
 
-    // destroy atomic flag
     atomic_flag_clear(&flag);
 
     return 0;
