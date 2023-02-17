@@ -141,9 +141,9 @@ int main(int argc, char* argv[]) {
     }
 
     out.close();
-
-    // destory semaphore
-    //sem_destroy(&sem);
+    in.close();
+    
+    sem_destroy(&sem);
     
     return 0;
 }
