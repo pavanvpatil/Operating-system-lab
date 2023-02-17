@@ -2,6 +2,8 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include<chrono>
+
 
 using namespace std;
 
@@ -17,6 +19,13 @@ public:
     }
 
 };
+
+auto startTime() {
+    return chrono::high_resolution_clock::now();
+}
+auto endTime() {
+    return chrono::high_resolution_clock::now();
+}
 
 // source: https://www.baeldung.com/cs/convert-rgb-to-grayscale
 //  Luminosity Method
@@ -100,8 +109,12 @@ int main(int argc, char* argv[]) {
         out << width << " " << height << endl;
         out << maxColor << endl;
 
+        auto start = startTime();
         grayScale(pixels);
         blueTone(pixels);
+        auto end = endTime();
+
+        cout << "Duration: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms" << endl;
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -109,7 +122,7 @@ int main(int argc, char* argv[]) {
             }
             out << endl;
         }
-
+       
     }
 
     out.close();

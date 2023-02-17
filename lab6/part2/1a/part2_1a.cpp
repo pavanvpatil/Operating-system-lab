@@ -25,6 +25,12 @@ vector<vector<pixel*>> pixels;
 // atomic flag
 atomic_flag flag = ATOMIC_FLAG_INIT;
 
+auto startTime() {
+    return chrono::high_resolution_clock::now();
+}
+auto endTime() {
+    return chrono::high_resolution_clock::now();
+}
 
 // source: https://www.baeldung.com/cs/convert-rgb-to-grayscale
 //  Luminosity Method
@@ -119,12 +125,16 @@ int main(int argc, char* argv[]) {
         out << type << endl;
         out << width << " " << height << endl;
         out << maxColor << endl;
-
+        
+        auto start = startTime();
         thread t1(grayScale, ref(pixels));
         thread t2(blueTone, ref(pixels));
         t1.join();
         t2.join();
+        auto end = endTime();
 
+        cout << "Duration: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms" << endl;
+        
         // grayScale(pixels);
         // blueTone(pixels);
 
