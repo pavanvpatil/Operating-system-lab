@@ -221,10 +221,13 @@ int main(int argc, char** argv){
 
     out.open(output_file);
 
-    if (out.is_open()) {
+    if (out.is_open()) 
+    {
+
         out << type << endl;
         out << width << " " << height << endl;
         out << maxColor << endl;
+
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 pixel pix = pixelPointer[i * width + j];
@@ -232,6 +235,7 @@ int main(int argc, char** argv){
             }
             out << endl;
         }
+        
     }
 
     out.close();
