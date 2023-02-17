@@ -5,6 +5,8 @@
 #include <thread>
 #include <chrono>
 #include <semaphore.h>
+#include <math.h>
+#include <cmath>
 
 // declare a semaphore
 sem_t sem;
@@ -82,6 +84,43 @@ void blueTone(vector<vector<pixel *>> &pixels)
     }
 }
 
+void Edge_Detection(vector<vector<pixel *>> &pixels)
+{
+    int width = pixels[0].size();
+    int height = pixels.size();
+    vector<vector<pixel *>> newpixels(height, vector<pixel *>(width, NULL));
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            newpixels[i][j] = new pixel(0, 0, 0);
+        }
+    }
+
+    for (int i = 1; i <= height - 2; i++)
+    {
+        for (int j = 1; j <= width - 2; j++)
+        {
+
+            newpixels[i][j]->r = sqrt(pow((pixels[i - 1][j - 1]->r + 2 * pixels[i][j - 1]->r + pixels[i + 1][j - 1]->r) - (pixels[i - 1][j + 1]->r + 2 * pixels[i][j + 1]->r + pixels[i + 1][j + 1]->r), 2) + pow((pixels[i - 1][j - 1]->r + 2 * pixels[i - 1][j]->r + pixels[i - 1][j + 1]->r) - (pixels[i + 1][j - 1]->r + 2 * pixels[i + 1][j]->r + pixels[i + 1][j + 1]->r), 2));
+            newpixels[i][j]->g = sqrt(pow((pixels[i - 1][j - 1]->g + 2 * pixels[i][j - 1]->g + pixels[i + 1][j - 1]->g) - (pixels[i - 1][j + 1]->g + 2 * pixels[i][j + 1]->g + pixels[i + 1][j + 1]->g), 2) + pow((pixels[i - 1][j - 1]->g + 2 * pixels[i - 1][j]->g + pixels[i - 1][j + 1]->g) - (pixels[i + 1][j - 1]->g + 2 * pixels[i + 1][j]->g + pixels[i + 1][j + 1]->g), 2));
+            newpixels[i][j]->b = sqrt(pow((pixels[i - 1][j - 1]->b + 2 * pixels[i][j - 1]->b + pixels[i + 1][j - 1]->b) - (pixels[i - 1][j + 1]->b + 2 * pixels[i][j + 1]->b + pixels[i + 1][j + 1]->b), 2) + pow((pixels[i - 1][j - 1]->b + 2 * pixels[i - 1][j]->b + pixels[i - 1][j + 1]->b) - (pixels[i + 1][j - 1]->b + 2 * pixels[i + 1][j]->b + pixels[i + 1][j + 1]->b), 2));
+        }
+    }
+
+    for (int i = height - 1; i > 0; i--)
+    {
+        for (int j = 1; j <= width - 1; j++)
+        {
+            sem_wait(&sem);
+            pixels[i][j]->r = newpixels[i][j]->r;
+            pixels[i][j]->g = newpixels[i][j]->g;
+            pixels[i][j]->b = newpixels[i][j]->b;
+            sem_post(&sem);
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -136,7 +175,7 @@ int main(int argc, char *argv[])
 
         auto start = startTime();
         thread t1(grayScale, ref(pixels));
-        thread t2(blueTone, ref(pixels));
+        thread t2(Edge_Detection, ref(pixels));
         t1.join();
         t2.join();
         auto end = endTime();
