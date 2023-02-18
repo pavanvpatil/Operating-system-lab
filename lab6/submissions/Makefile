@@ -1,4 +1,4 @@
-all: part1 part2_1a part2_1b part2_2
+all: part1 part2_1a part2_1b part2_2 part2_3
 
 part1: 1
 	./1 car.ppm output_part1.ppm
