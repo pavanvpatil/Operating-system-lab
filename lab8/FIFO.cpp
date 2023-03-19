@@ -78,10 +78,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    cout << "Page Faults: " << page_faults;
-    // cout << "Page Hits: " << page_hits << endl;
-    // cout << "Page Fault Rate: " << (float)page_faults / (float)(page_faults + page_hits) << endl;
-    // cout << "Page Hit Rate: " << (float)page_hits / (float)(page_faults + page_hits) << endl;
+    cout << "Page Faults: " << page_faults << " " << endl;
+    cout << "Page Hits: " << page_hits << endl;
+    cout << "Page Fault Rate: " << (float)page_faults / (float)(page_faults + page_hits) << endl;
+    cout << "Page Hit Rate: " << (float)page_hits / (float)(page_faults + page_hits) << endl;
 
     return 0;
 }
