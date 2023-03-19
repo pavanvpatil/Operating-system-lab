@@ -11,24 +11,21 @@ n_70 = int(n * 0.7)
 n_80 = int(n * 0.8)
 n_90 = int(n * 0.9)
 
+data = []
+
 f = open("testcase.txt", "w")
 
-for i in range(200):
-    f.write(str(rand.randint(1, n_20)) + " ")
+for i in range(8000):
+    data.append(str(rand.randint(1, n_20)))
 
-for i in range(100):
-    f.write(str(rand.randint(n_20+1, n_40)) + " ")
+rand.shuffle(data)
 
-for i in range(200):
-    f.write(str(rand.randint(n_40+1, n_50)) + " ")
+for i in range(2000):
+    data.append(str(rand.randint(n_20+1, n)))
 
-for i in range(100):
-    f.write(str(rand.randint(n_50+1, n_60)) + " ")
+rand.shuffle(data)
 
-for i in range(200):
-    f.write(str(rand.randint(1, n_40)) + " ")
-
-for i in range(200):
-    f.write(str(rand.randint(1, n)) + " ")
+for i in range(len(data)):
+    f.write(data[i] + " ")
 
 f.close()
