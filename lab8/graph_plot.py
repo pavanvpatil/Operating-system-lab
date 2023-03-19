@@ -1,9 +1,48 @@
 import subprocess
+import sys
+import matplotlib.pyplot as plt
 
-proc = subprocess.Popen(["./LRU.out", "60", "20", "60", "req1.dat"],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-stdout, stderr = proc.communicate()
+argc = len(sys.argv)
 
-if proc.returncode != 0:
-    print("Execution failed:", stderr.decode())
-else:
-    print("Output:", stdout.decode())
+if argc != 4:
+    print("Usage: python3 graph_plot.py <number of pages> <number of blocks> <filename>")
+    exit(1)
+
+num_pages = int(sys.argv[1])
+num_blocks = int(sys.argv[2])
+filename = sys.argv[3]
+
+yFIFO = []
+yLRU = []
+yRandom = []
+
+pages = [10, 20, 40, 80, 100]
+
+x = []
+
+for i in range(1, num_pages+1):
+    x.append(i)
+    FIFO=subprocess.run(["./FIFO", str(num_pages), str(i),
+                          str(num_blocks), filename], stdout = subprocess.PIPE)
+    FIFO=FIFO.stdout.decode('utf-8').split(" ")[2]
+    yFIFO.append(int(FIFO))
+
+    LRU=subprocess.run(["./LRU", str(num_pages), str(i),
+                         str(num_blocks), filename], stdout = subprocess.PIPE)
+    LRU=LRU.stdout.decode('utf-8').split(" ")[2]
+    yLRU.append(int(LRU))
+
+    Random=subprocess.run(["./Random", str(num_pages), str(i),
+                            str(num_blocks), filename], stdout = subprocess.PIPE)
+    Random=Random.stdout.decode('utf-8').split(" ")[2]
+    yRandom.append(int(Random))
+
+plt.plot(x, yFIFO, label = "FIFO")
+plt.plot(x, yLRU, label = "LRU")
+plt.plot(x, yRandom, label = "Random")
+
+plt.xlabel("Number of Frames")
+plt.ylabel("Page Faults")
+plt.title("Page Replacement Algorithms")
+plt.legend()
+plt.show()
