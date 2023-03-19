@@ -2,13 +2,6 @@
 
 using namespace std;
 
-int vpages, pframes, swap_size;
-vector<int> data;
-vector<int> LRU;
-int page_faults = 0;
-int page_hits = 0;
-unordered_set<int> RAM;
-
 int main(int argc, char *argv[])
 {
     argc--;
@@ -18,6 +11,14 @@ int main(int argc, char *argv[])
         cout << "Error in Usage: ./a.out <virtual pages> <page frames> <blocks in swap space> <filename>" << endl;
         return 0;
     }
+
+    int vpages, pframes, swap_size;
+    vector<int> data;
+    vector<int> LRU;
+    int page_faults = 0;
+    int page_hits = 0;
+    unordered_set<int> RAM;
+
     vpages = atoi(argv[0]);
     pframes = atoi(argv[1]);
     swap_size = atoi(argv[2]);
@@ -43,21 +44,20 @@ int main(int argc, char *argv[])
         data.push_back(num);
     }
 
-
     // Close the input file
     infile.close();
 
     // implement LRU
-    for (int i = 0;i<data.size();i++)
+    for (int i = 0; i < data.size(); i++)
     {
-        if(data[i]>vpages)
+        if (data[i] > vpages)
         {
             cout << "segmentation fault: virtual page number greater than virtual pages" << endl;
             return 0;
         }
-        if(RAM.find(data[i]) == RAM.end())
+        if (RAM.find(data[i]) == RAM.end())
         {
-            if(RAM.size() < pframes)
+            if (RAM.size() < pframes)
             {
                 LRU.push_back(data[i]);
                 RAM.insert(data[i]);
@@ -76,11 +76,11 @@ int main(int argc, char *argv[])
         else
         {
             page_hits++;
-            for(int j=0;j<LRU.size();j++)
+            for (int j = 0; j < LRU.size(); j++)
             {
-                if(LRU[j] == data[i])
+                if (LRU[j] == data[i])
                 {
-                    LRU.erase(LRU.begin()+j);
+                    LRU.erase(LRU.begin() + j);
                     LRU.push_back(data[i]);
                     break;
                 }

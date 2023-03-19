@@ -2,13 +2,6 @@
 
 using namespace std;
 
-int vpages, pframes, swap_size;
-vector<int> data;
-vector<int> Random;
-int page_faults = 0;
-int page_hits = 0;
-unordered_set<int> RAM;
-
 int main(int argc, char *argv[])
 {
     argc--;
@@ -18,6 +11,14 @@ int main(int argc, char *argv[])
         cout << "Error in Usage: ./a.out <virtual pages> <page frames> <blocks in swap space> <filename>" << endl;
         return 0;
     }
+
+    int vpages, pframes, swap_size;
+    vector<int> data;
+    vector<int> Random;
+    int page_faults = 0;
+    int page_hits = 0;
+    unordered_set<int> RAM;
+
     vpages = atoi(argv[0]);
     pframes = atoi(argv[1]);
     swap_size = atoi(argv[2]);
@@ -47,7 +48,7 @@ int main(int argc, char *argv[])
     infile.close();
 
     srand(time(0));
-    
+
     // implement Random
     for (int i = 0; i < data.size(); i++)
     {
